@@ -23,7 +23,6 @@ import android.os.PersistableBundle;
 import android.os.SystemProperties;
 import android.service.carrier.CarrierIdentifier;
 import android.service.carrier.CarrierService;
-import android.telephony.CarrierConfigManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,7 +32,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -189,24 +187,7 @@ public class DefaultCarrierConfigService extends CarrierService {
             Log.e(TAG, e.toString());
         }
 
-        getLocalCarrierName(config);
-
         return config;
-    }
-
-    private void getLocalCarrierName(PersistableBundle config) {
-        Locale locale = getResources().getConfiguration().getLocales().get(0);
-        String localCarrierName = config.getString(CarrierConfigManager.KEY_CARRIER_NAME_STRING + "_" + locale.getLanguage() + "-" + locale.getCountry(), null);
-        if (TextUtils.isEmpty(localCarrierName)) {
-            String carrierNameWithLang = CarrierConfigManager.KEY_CARRIER_NAME_STRING + "_" + locale.getLanguage();
-            for (String key : config.keySet()) {
-                if (key.startsWith(carrierNameWithLang)) {
-                    localCarrierName = config.getString(key, null);
-                    break;
-                }
-            }
-        }
-        config.putString(CarrierConfigManager.KEY_CARRIER_NAME_STRING, localCarrierName);
     }
 
     /**
